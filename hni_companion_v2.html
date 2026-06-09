@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高净值客户智能陪伴系统 V2 — Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+    </script>
+    <style>
+        :root {
+            --bg-deep: #0A0A0F;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a24;
+            --gold: #C5A059;
+            --gold-light: #e2cd8d;
+            --gold-dim: #7a6438;
+            --text-primary: #f0ece6;
+            --text-secondary: #b0ada5;
+            --text-muted: #706d65;
+            --danger: #c0392b;
+            --danger-dim: #8b2c20;
+            --warning: #d4a017;
+            --success: #27ae60;
+            --border: rgba(197, 160, 89, 0.12);
+            --border-active: rgba(197, 160, 89, 0.4);
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --glow-gold: 0 0 20px rgba(197, 160, 89, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(201, 169, 110, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(201, 169, 110, 0.02) 0%, transparent 50%);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(201, 169, 110, 0.08) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--bg-deep);
+        }
+        .header-logo h1 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gold-light);
+            letter-spacing: 1px;
+        }
+        .header-badge {
+            background: var(--gold);
+            color: var(--bg-deep);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .header-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Main Layout — single-column, centered */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 28px 20px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { padding: 20px; }
+            .header { padding: 20px; }
+        }
+
+        /* Panels */
+        .panel { display: flex; flex-direction: column; gap: 20px; }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            border-color: var(--border-active);
+            background: var(--bg-card-hover);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gold-light);
+            letter-spacing: 0.5px;
+        }
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Client Profile */
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .profile-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .profile-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .profile-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .profile-value.highlight {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        /* Client Tags */
+        .client-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .client-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(201, 169, 110, 0.08);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--gold-light);
+            white-space: nowrap;
+        }
+
+        /* Metrics */
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { font-size: 13px; color: var(--text-secondary); }
+        .metric-value { font-size: 14px; font-weight: 600; }
+        .metric-value.positive { color: var(--success); }
+        .metric-value.negative { color: var(--danger); }
+        .metric-value.gold { color: var(--gold-light); }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .progress-fill.gold { background: linear-gradient(90deg, var(--gold-dim), var(--gold-light)); }
+        .progress-fill.danger { background: linear-gradient(90deg, #8b0000, var(--danger)); }
+        .progress-fill.warning { background: linear-gradient(90deg, #8a6d00, var(--warning)); }
+        .progress-fill.success { background: linear-gradient(90deg, #1b5e20, var(--success)); }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Alert Tags */
+        .alert-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .alert-tag.high { background: rgba(192, 57, 43, 0.15); border-left: 3px solid var(--danger); }
+        .alert-tag.medium { background: rgba(212, 160, 23, 0.12); border-left: 3px solid var(--warning); }
+        .alert-tag.low { background: rgba(46, 125, 50, 0.12); border-left: 3px solid var(--success); }
+        .alert-icon { font-size: 14px; flex-shrink: 0; }
+        .alert-content { flex: 1; }
+        .alert-title { font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+        .alert-desc { color: var(--text-secondary); line-height: 1.4; }
+
+        /* Legacy Score */
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0 auto;
+        }
+        .score-inner {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-number {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+        .score-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .score-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .score-item {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .score-check { color: var(--success); }
+        .score-cross { color: var(--text-muted); }
+
+        /* Legacy Block */
+        .legacy-block {
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.08), rgba(201, 169, 110, 0.02));
+            border: 1px solid var(--border-active);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .legacy-block-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .legacy-block-title {
+            font-family: var(--font-display);
+            font-size: 14px;
+            color: var(--gold-light);
+        }
+        .legacy-block-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .legacy-action {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 16px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .legacy-action:hover {
+            background: var(--gold);
+            color: var(--bg-deep);
+        }
+
+        /* Product Action Buttons */
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .product-btn {
+            display: inline-block;
+            padding: 6px 16px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+        }
+        .product-btn:hover {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-primary);
+            border-color: var(--border-active);
+        }
+        .product-btn.primary {
+            background: var(--gold);
+            color: var(--bg-deep);
+            border-color: var(--gold);
+            font-weight: 600;
+        }
+        .product-btn.primary:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+        }
+        .product-btn.dismiss {
+            border-color: rgba(255,255,255,0.08);
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+        .product-btn.dismiss:hover {
+            background: rgba(192,57,43,0.1);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .product-card.dismissed {
+            opacity: 0.3;
+            pointer-events: none;
+            text-decoration: line-through;
+            text-decoration-color: var(--text-muted);
+        }
+
+        /* Currency Exposure */
+        .currency-bar {
+            display: flex;
+            height: 24px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .currency-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #000;
+            transition: width 0.6s;
+        }
+        .currency-segment.usd { background: #c9a96e; }
+        .currency-segment.hkd { background: #e8d5a3; }
+        .currency-segment.sgd { background: #d4a574; }
+        .currency-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .currency-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .currency-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+        .currency-dot.usd { background: #c9a96e; }
+        .currency-dot.hkd { background: #e8d5a3; }
+        .currency-dot.sgd { background: #d4a574; }
+
+        /* Phone Mockup — Dark Gold Premium */
+        .phone-mockup {
+            position: sticky;
+            top: 20px;
+            width: 380px;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #111116;
+            border-radius: 36px;
+            border: 2px solid rgba(197, 160, 89, 0.12);
+            padding: 12px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.4), 0 0 80px rgba(197,160,89,0.04);
+            overflow: hidden;
+        }
+        .phone-screen {
+            background: #0A0A0F;
+            border-radius: 28px;
+            padding: 14px 12px;
+            min-height: 560px;
+            max-height: 640px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .phone-screen::-webkit-scrollbar { width: 3px; }
+        .phone-screen::-webkit-scrollbar-thumb { background: rgba(197,160,89,0.15); border-radius: 2px; }
+
+        .chat-bubble {
+            max-width: 94%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            line-height: 1.55;
+            animation: fadeSlideUp 0.45s ease;
+        }
+        .chat-bubble.system {
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .chat-bubble.user {
+            background: var(--gold-dim);
+            color: #fff;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+            text-align: right;
+        }
+        .chat-time {
+            font-size: 10px;
+            color: #555;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Insight Cards — phone screen premium cards */
+        .insight-card {
+            background: #12121a;
+            border: 1px solid rgba(197, 160, 89, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .insight-card-header {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .insight-card-header .emoji { font-size: 16px; }
+        .insight-big-number {
+            font-family: var(--font-body);
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .insight-big-number.up { color: var(--success); }
+        .insight-big-number.down { color: var(--danger); }
+        .insight-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: baseline;
+        }
+        .insight-ticker {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .insight-ticker .up { color: var(--success); }
+        .insight-ticker .down { color: var(--danger); }
+        .insight-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .insight-divider {
+            height: 1px;
+            background: rgba(197, 160, 89, 0.08);
+            margin: 14px 0;
+        }
+        .insight-action-card {
+            background: #12121a;
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        /* Toggle button */
+        .push-toggle-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            margin: 12px 0 4px;
+            background: transparent;
+            border: 1px solid rgba(197,160,89,0.25);
+            border-radius: 20px;
+            color: var(--gold);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+        }
+        .push-toggle-btn:hover {
+            background: rgba(197,160,89,0.08);
+            border-color: var(--gold-light);
+        }
+
+        /* Phone card styles */
+        .phone-card {
+            background: #12121a;
+            border: 1px solid rgba(197, 160, 89, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .phone-card-header {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .phone-card-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .phone-card-body {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .phone-action-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--gold);
+            color: #0A0A0F;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-body);
+        }
+        .phone-action-btn:hover {
+            background: var(--gold-light);
+        }
+        .phone-action-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .phone-expand-link {
+            display: block;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 12px;
+            color: var(--gold);
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid rgba(197,160,89,0.25);
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .phone-expand-link:hover {
+            background: rgba(197,160,89,0.08);
+            border-color: var(--gold-light);
+        }
+
+        /* Animations */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(197, 160, 89, 0.06); }
+            50% { box-shadow: 0 0 30px rgba(197, 160, 89, 0.12); }
+        }
+        .chat-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin: 6px 0 4px 0;
+        }
+        .chat-item {
+            font-size: 11px;
+            color: #bbb;
+            padding: 2px 0;
+        }
+        .chat-emoji { font-size: 14px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Action Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            border-radius: 20px;
+            font-size: 13px;
+            font-family: var(--font-body);
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.3px;
+        }
+        .btn:hover {
+            background: var(--gold);
+            color: var(--bg-deep);
+        }
+        .btn.primary {
+            background: var(--gold);
+            color: var(--bg-deep);
+            font-weight: 600;
+        }
+        .btn.primary:hover {
+            background: var(--gold-light);
+        }
+        .btn.danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .btn.danger:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Product Card — H5 Card Style */
+        .product-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        .product-card:hover { border-color: var(--gold-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+        .product-card.blocked {
+            opacity: 0.4;
+            border-color: var(--danger);
+            background: rgba(192, 57, 43, 0.05);
+            padding: 12px 14px;
+        }
+        .product-card-image {
+            height: 80px;
+            background: linear-gradient(135deg, var(--bg-panel), var(--bg-deep));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, transparent 60%);
+        }
+        .product-card-body {
+            padding: 12px 14px;
+        }
+        .product-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+        .product-reason {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .product-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .product-blocked-tag {
+            font-size: 10px;
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 12px;
+        }
+        .tab {
+            flex: 1;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+            border: none;
+            background: transparent;
+            font-family: var(--font-body);
+        }
+        .tab.active {
+            background: var(--gold);
+            color: var(--bg-deep);
+            font-weight: 600;
+        }
+
+        /* Flow Diagram */
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+        }
+        .flow-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+        .flow-num.done { background: var(--gold); color: var(--bg-deep); }
+        .flow-text { font-size: 12px; color: var(--text-secondary); }
+        .flow-text strong { color: var(--text-primary); }
+
+        .flow-divider {
+            width: 26px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        /* Summary Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            text-align: center;
+        }
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: var(--bg-deep);
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideUp 0.3s ease, fadeOut 0.3s ease 2.5s forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Notification Banner */
+        .notify-banner {
+            display: none;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+        .notify-banner.show { display: block; }
+        .notify-banner.success {
+            background: rgba(46, 125, 50, 0.2);
+            border: 1px solid var(--success);
+            color: #4caf50;
+        }
+        .notify-banner.error {
+            background: rgba(192, 57, 43, 0.2);
+            border: 1px solid var(--danger);
+            color: #ef5350;
+        }
+        .notify-banner .notify-close {
+            float: right;
+            cursor: pointer;
+            opacity: 0.6;
+            font-size: 16px;
+            line-height: 1;
+        }
+        .notify-banner .notify-close:hover { opacity: 1; }
+
+        /* Mermaid Diagrams */
+        .mermaid-card { overflow: hidden; }
+        .mermaid-card .card-header { cursor: pointer; user-select: none; }
+        .mermaid-card .card-header .collapse-icon {
+            transition: transform 0.3s;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .mermaid-card.collapsed .collapse-icon { transform: rotate(-90deg); }
+        .mermaid-card .mermaid-wrapper {
+            background: #121218;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            overflow-x: auto;
+            transition: max-height 0.4s ease, padding 0.4s ease, opacity 0.3s;
+            max-height: 2000px;
+            opacity: 1;
+        }
+        .mermaid-card.collapsed .mermaid-wrapper {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+            border: none;
+            overflow: hidden;
+        }
+        .mermaid-wrapper pre.mermaid {
+            background: transparent;
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #999;
+            white-space: pre;
+        }
+        .mermaid-wrapper svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Benchmark Grid */
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .benchmark-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        .benchmark-item .bm-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .benchmark-item .bm-client {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        .benchmark-item .bm-bench {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .benchmark-item .bm-client.good { color: var(--success); }
+        .benchmark-item .bm-client.warn { color: var(--warning); }
+        .benchmark-item .bm-client.bad { color: var(--danger); }
+
+        /* ===== Modal / Overlay ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-active);
+            border-radius: var(--radius);
+            max-width: 520px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 28px 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none; border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-close:hover { color: var(--gold-light); }
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+        }
+        .modal-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(201,169,110,0.12);
+            border: 1px solid rgba(201,169,110,0.25);
+            border-radius: 4px;
+            font-size: 10px;
+            color: var(--gold-light);
+            margin-right: 6px;
+        }
+        .modal-section {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .modal-section h4 {
+            font-size: 13px;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+        .modal-section p, .modal-section li {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .modal-section ul {
+            padding-left: 18px;
+            margin: 4px 0;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .modal-actions .product-btn { flex: 1; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-logo">
+        <div class="header-logo-icon">&#9673;</div>
+        <div>
+            <h1>HNI Companion</h1>
+            <div class="header-subtitle">高净值客户智能陪伴系统</div>
+        </div>
+    </div>
+    <div class="header-badge">V2.0 — 认知增强副驾驶</div>
+</div>
+
+<div class="main-container">
+    <!-- Center: Phone Mockup (Push Preview) -->
+    <div class="phone-panel">
+        <div class="phone-mockup">
+            <!-- <div class="phone-notch"></div> -->
+            <div class="phone-screen" id="phoneScreen">
+                <div class="chat-time" id="chatDate">今日 08:00</div>
+                <div class="chat-bubble system" id="chatContent">
+                    <div class="empty-state">点击 "生成推送" 查看今日简报</div>
+                </div>
+            </div>
+        </div>
+        <div class="stats-mini" style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.03);border-radius:12px;padding:8px 12px;margin-top:12px;font-size:11px;max-width:380px;margin-left:auto;margin-right:auto;">
+            <div style="text-align:center;"><span style="color:var(--gold-light);">68%</span><br>推送打开率</div>
+            <div style="text-align:center;"><span style="color:var(--gold-light);">12%</span><br>产品点击率</div>
+            <div style="text-align:center;"><span style="color:var(--gold-light);">4.2%</span><br>预约转化率</div>
+            <div style="text-align:center;"><span style="color:var(--gold-light);">每周1次</span><br>传承线索</div>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:6px;">基于用户行为实时优化推荐策略 · 迭代中</div>
+        <div class="btn-row" style="justify-content:center;margin-top:12px;">
+            <button class="btn primary" onclick="generatePush()">生成今日推送</button>
+            <button class="btn" onclick="refreshAll()">🔄 刷新数据</button>
+            <button class="btn" onclick="toggleLegacy()">模拟传承交互</button>
+            <button class="btn" id="feishuBtn" onclick="sendToFeishu()">🚀 真实推送至飞书</button>
+            <button class="btn" onclick="openHistory()">📜 历史记录</button>
+        </div>
+        <div style="text-align:center;margin-top:6px;">
+            <span style="font-size:11px;color:var(--text-muted);">📅 数据更新时间：</span>
+            <span id="lastUpdateTime" style="font-size:11px;color:var(--gold-light);font-family:monospace;">--</span>
+        </div>
+        <div class="notify-banner" id="notifyBanner">
+            <span class="notify-close" onclick="this.parentElement.classList.remove('show')">&times;</span>
+            <span id="notifyMsg"></span>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal-overlay" id="productModal" onclick="if(event.target===this)closeProductModal()">
+        <div class="modal-card" id="modalContent"></div>
+    </div>
+
+    <!-- Push History Modal -->
+    <div class="modal-overlay" id="historyModal" onclick="if(event.target===this)closeHistory()">
+        <div class="modal-card" style="max-width:440px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h3 style="margin:0;font-family:var(--font-display);color:var(--gold-light);">📜 推送历史</h3>
+                <button class="btn" style="padding:4px 12px;font-size:11px;" onclick="clearHistory()">清空历史</button>
+            </div>
+            <div id="historyList" style="max-height:50vh;overflow-y:auto;">
+                <div style="color:var(--text-muted);text-align:center;padding:20px;">暂无历史记录</div>
+            </div>
+            <div style="text-align:right;margin-top:12px;">
+                <button class="btn" onclick="closeHistory()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    ╔══════════════════════════════════════════════════════════╗
+    ║  客户数据隐私保护方案 (生产环境)                         ║
+    ╠══════════════════════════════════════════════════════════╣
+    ║  1. 前端展示脱敏                                        ║
+    ║     - 账户号码: 部分掩码显示 (如 ****1234)               ║
+    ║     - 身份证号: 仅显示后 4 位 + 省市区                  ║
+    ║     - 手机号: 部分掩码 (如 138****5678)                 ║
+    ║  2. API 权限控制                                        ║
+    ║     - JWT 认证, 仅授权顾问可访问                        ║
+    ║     - 角色分级: advisor / compliance_officer / admin    ║
+    ║     - 所有 API 请求记录审计日志 (AUDIT_LOG)             ║
+    ║  3. 数据存储                                            ║
+    ║     - PostgreSQL: 加密存储敏感字段 (AES-256)            ║
+    ║     - 传输层: TLS 1.3 加密                              ║
+    ║     - 密钥管理: HSM / KMS 分离                          ║
+    ║  4. Demo 说明                                           ║
+    ║     - 当前 Demo 使用 mock 数据, 无真实客户信息           ║
+    ║     - localStorage 仅存储工单记录/产品偏好, 不含PII     ║
+    ╚══════════════════════════════════════════════════════════╝
+    -->
+</div>
+
+<script>
+// ========== Backend Configuration ==========
+// 修改此处以对接你的后端服务地址
+const BACKEND_API_URL = 'http://localhost:5000/api/generate_push';
+// 如果部署在远程服务器，改为类似: 'http://192.168.1.100:5000/api/generate_push'
+
+// ========== Analytics / Event Tracking ==========
+function trackEvent(category, action, label) {
+    const event = { category, action, label, timestamp: new Date().toISOString() };
+    try {
+        const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
+        events.push(event);
+        // Keep last 100 events
+        if (events.length > 100) events.splice(0, events.length - 100);
+        localStorage.setItem('analytics_events', JSON.stringify(events));
+    } catch(e) {}
+}
+
+function loadAnalyticsEvents() {
+    try { return JSON.parse(localStorage.getItem('analytics_events') || '[]'); }
+    catch(e) { return []; }
+}
+
+/*
+function refreshAnalyticsUI() {
+    const events = loadAnalyticsEvents();
+    const pushCount = events.filter(e => e.action === 'push_generated').length;
+    const expandCount = events.filter(e => e.action === 'expand_content').length;
+    const productClick = events.filter(e => e.action === 'product_inquiry').length;
+    const legacyReply = events.filter(e => e.action === 'legacy_reply').length;
+
+    document.getElementById('anPushCount').textContent = pushCount;
+    document.getElementById('anExpandCount').textContent = expandCount;
+    document.getElementById('anProductClick').textContent = productClick;
+    document.getElementById('anLegacyReply').textContent = legacyReply;
+
+    // Funnel rates
+    const expandRate = pushCount > 0 ? ((expandCount / pushCount) * 100).toFixed(0) : '--';
+    const clickRate = pushCount > 0 ? ((productClick / pushCount) * 100).toFixed(0) : '--';
+    document.getElementById('anFunnelExpand').textContent = expandRate === '--' ? '--%' : expandRate + '%';
+    document.getElementById('anFunnelClick').textContent = clickRate === '--' ? '--%' : clickRate + '%';
+}
+*/
+
+// ========== Push Config (Iteration Settings) ==========
+const DEFAULT_CONFIG = { pushTime: '09:00', style: 'concise', productCount: 2 };
+
+function loadPushConfig() {
+    try {
+        const stored = JSON.parse(localStorage.getItem('hni_push_config'));
+        return { ...DEFAULT_CONFIG, ...(stored || {}) };
+    } catch(e) { return { ...DEFAULT_CONFIG }; }
+}
+
+function savePushConfig(cfg) {
+    localStorage.setItem('hni_push_config', JSON.stringify(cfg));
+}
+
+function applyConfigUI(cfg) {
+    document.getElementById('cfgPushTime').value = cfg.pushTime;
+    document.getElementById('cfgStyle').value = cfg.style;
+    document.getElementById('cfgProductCount').value = cfg.productCount;
+}
+
+/*
+function applyConfigAndRegenerate() {
+    const cfg = {
+        pushTime: document.getElementById('cfgPushTime').value,
+        style: document.getElementById('cfgStyle').value,
+        productCount: parseInt(document.getElementById('cfgProductCount').value),
+    };
+    savePushConfig(cfg);
+    showToast('✅ 设置已应用，正在重新生成...');
+    generatePush();
+}
+*/
+
+/*
+function toggleConfigCard() {
+    const body = document.getElementById('configBody');
+    body.classList.toggle('collapsed');
+    localStorage.setItem('hni_config_collapsed', body.classList.contains('collapsed') ? '1' : '0');
+}
+*/
+
+/*
+function restoreConfigCardState() {
+    try {
+        const collapsed = localStorage.getItem('hni_config_collapsed');
+        if (collapsed === '1') {
+            document.getElementById('configBody').classList.add('collapsed');
+        }
+    } catch(e) {}
+}
+*/
+
+// ========== Mock Data (mirrors hni_core/mock_data.py) ==========
+
+const TODAY = new Date().toISOString().split('T')[0];
+
+const davidProfile = {
+    client_id: 'david_001', name: 'David', age: 42,
+    marital_status: 'married', children_count: 2,
+    risk_tolerance: 'aggressive', total_assets_usd: 85_000_000,
+    jurisdiction: 'HK', cross_border_jurisdictions: 3,
+    legacy_prompt_frequency: 0, legacy_opt_out_until: null,
+};
+
+const rawHoldings = [
+    { symbol:'NVDA', name:'NVIDIA', asset_class:'equity', original_currency:'USD', market_value_original:40_000_000, market_value_usd:40_000_000, weight:0, cost_basis:400, current_price:880, change_percent:-2.1, sector:'technology', locked_until:null, unfunded_commitment:0 },
+    { symbol:'GOOGL', name:'Alphabet Inc.', asset_class:'equity', original_currency:'USD', market_value_original:12_000_000, market_value_usd:12_000_000, weight:0, cost_basis:110, current_price:175, change_percent:0.6, sector:'technology', locked_until:null, unfunded_commitment:0 },
+    { symbol:'TSLA', name:'Tesla', asset_class:'equity', original_currency:'USD', market_value_original:8_000_000, market_value_usd:8_000_000, weight:0, cost_basis:200, current_price:250, change_percent:-1.5, sector:'automotive', locked_until:null, unfunded_commitment:0 },
+    { symbol:'HKGovB', name:'香港政府债券', asset_class:'bond', original_currency:'HKD', market_value_original:12_000_000, market_value_usd:0, weight:0, cost_basis:100, current_price:102, change_percent:-0.3, sector:'government', locked_until:null, unfunded_commitment:0 },
+    { symbol:'SGD_FD', name:'新加坡银行定存', asset_class:'cash', original_currency:'SGD', market_value_original:3_000_000, market_value_usd:0, weight:0, cost_basis:1, current_price:1, change_percent:0, sector:'cash', locked_until:null, unfunded_commitment:0 },
+    { symbol:'Sequoia_Fund_X', name:'红杉早期基金 X', asset_class:'vc', original_currency:'USD', market_value_original:8_000_000, market_value_usd:8_000_000, weight:0, cost_basis:8_000_000, current_price:8_000_000, change_percent:0, sector:'venture_capital', locked_until:'2029-12-31', unfunded_commitment:4_000_000 },
+    { symbol:'SoftBank_Vision', name:'软银愿景基金', asset_class:'pe', original_currency:'USD', market_value_original:7_500_000, market_value_usd:7_500_000, weight:0, cost_basis:7_500_000, current_price:7_500_000, change_percent:0, sector:'private_equity', locked_until:'2030-06-30', unfunded_commitment:2_500_000 },
+    { symbol:'Bridgewater', name:'桥水全天候', asset_class:'hedge_fund', original_currency:'USD', market_value_original:6_000_000, market_value_usd:6_000_000, weight:0, cost_basis:6_000_000, current_price:6_000_000, change_percent:0.2, sector:'macro', locked_until:null, unfunded_commitment:0 },
+    { symbol:'US_Treasury', name:'美国10年期国债', asset_class:'bond', original_currency:'USD', market_value_original:3_000_000, market_value_usd:3_000_000, weight:0, cost_basis:100, current_price:98, change_percent:-0.5, sector:'government', locked_until:null, unfunded_commitment:0 },
+    { symbol:'USD_CASH', name:'美元现金', asset_class:'cash', original_currency:'USD', market_value_original:2_000_000, market_value_usd:2_000_000, weight:0, cost_basis:1, current_price:1, change_percent:0, sector:'cash', locked_until:null, unfunded_commitment:0 },
+];
+
+const newsItems = [
+    { id:'n1', title:'美联储暗示9月可能降息', summary:'美联储官员表态通胀持续降温，9月降息概率提升至75%。', related_symbols:['NVDA','GOOGL'], sentiment:'positive', impact:'high', timestamp:TODAY },
+    { id:'n2', title:'中美科技关税谈判重启', summary:'新一轮谈判在旧金山举行，半导体行业关税政策将迎来调整。', related_symbols:['NVDA','GOOGL'], sentiment:'neutral', impact:'medium', timestamp:TODAY },
+    { id:'n3', title:'港元汇率逼近弱方兑换保证', summary:'港元近日持续走弱，金管局已买入港元维持汇率稳定。', related_symbols:['HKGovB'], sentiment:'negative', impact:'medium', timestamp:TODAY },
+];
+
+// ===== Enhanced Hotspot-Holding Mapping Rule Engine =====
+// Predefined keyword→holding mappings with impact direction & narrative
+// (extensible data field for future multi-client support)
+const HOTSPOT_HOLDING_MAP = [
+    { keywords: ['降息','美联储','利率','宽松','鸽派'], ticker:'NVDA', direction:'利好', narrative:'降息预期推动成长股估值修复' },
+    { keywords: ['降息','美联储','利率','宽松','鸽派'], ticker:'GOOGL', direction:'利好', narrative:'融资成本下降利好科技支出' },
+    { keywords: ['AMD','竞争','芯片','GPU','竞品'], ticker:'NVDA', direction:'利空', narrative:'竞争对手新品抢占市场份额' },
+    { keywords: ['AI','Agent','人工智能','大模型','算力','GPT'], ticker:'NVDA', direction:'利好', narrative:'AI算力需求持续强劲' },
+    { keywords: ['AI','Agent','人工智能','大模型','算力','GPT'], ticker:'TSLA', direction:'利好', narrative:'AI赋能自动驾驶加速落地' },
+    { keywords: ['科技关税','制裁','出口管制','贸易战','芯片法案'], ticker:'NVDA', direction:'利空', narrative:'地缘政治风险加剧供应链不确定性' },
+    { keywords: ['机器人','量产','自动驾驶','FSD','Optimus'], ticker:'TSLA', direction:'利好', narrative:'机器人量产进展超预期' },
+    { keywords: ['电动车','新能源','电动汽车','充电桩'], ticker:'TSLA', direction:'利好', narrative:'电动车渗透率持续提升' },
+    { keywords: ['搜索','广告','Google','Alphabet','Gemini'], ticker:'GOOGL', direction:'利好', narrative:'AI搜索与广告收入增长' },
+    { keywords: ['私募信贷','私人信贷','private credit'], ticker:'Sequoia_Fund_X', direction:'利好', narrative:'私募信贷赛道资金涌入' },
+    { keywords: ['VC','风险投资','融资','独角兽','初创','种子轮'], ticker:'Sequoia_Fund_X', direction:'利好', narrative:'VC赛道回暖，一级市场估值修复' },
+    { keywords: ['地产','房地产','商业地产','REITs'], ticker:'SoftBank_Vision', direction:'利好', narrative:'地产市场触底反弹迹象' },
+    { keywords: ['港元','港币','金管局','联系汇率','弱方'], ticker:'HKGovB', direction:'利空', narrative:'港元走弱影响港币资产估值' },
+];
+
+const productCatalog = [
+    { id:'p1', name:'全球多元配置私募信贷基金', type:'private_credit', reason:'适合您当前美股集中度偏高，可分散风险，目标收益8-10%/年', risk_level:'medium', min_investment:1_000_000, expected_return:'8-10%', urgency:'medium', action_label:'预约基金经理说明会', blocked:false },
+    { id:'p2', name:'亚洲核心城市增值型商业地产基金', type:'real_estate', reason:'提供稳定现金流，与股市相关性低，增强组合韧性', risk_level:'medium', min_investment:2_000_000, expected_return:'7-9%', urgency:'low', action_label:'索取产品说明书', blocked:false },
+    { id:'p3', name:'全球宏观对冲基金B类份额', type:'hedge_fund', reason:'在利率波动周期中提供下行保护，适配您当前科技股集中结构', risk_level:'medium', min_investment:3_000_000, expected_return:'10-15%', urgency:'medium', action_label:'安排一对一解读', blocked:false },
+    { id:'p4', name:'新加坡离岸家族信托架构服务', type:'family_trust', reason:'基于您跨境资产分布，可实现资产隔离与传承规划', risk_level:'low', min_investment:0, expected_return:'N/A', urgency:'medium', action_label:'预约家族办公室顾问', blocked:false },
+    { id:'p5', name:'高流动性美元短债基金', type:'short_term_bond', reason:'应对未来VC capital call，保持流动性同时增强收益', risk_level:'low', min_investment:500_000, expected_return:'4.5-5.5%', urgency:'high', action_label:'立即咨询流动性安排', blocked:false },
+    { id:'p6', name:'Pre-IPO科技项目联合投资份额', type:'pre_ipo', reason:'匹配您激进投资偏好，AI赛道稀缺机会', risk_level:'high', min_investment:2_000_000, expected_return:'15-25%', urgency:'medium', action_label:'索取项目资料', blocked:false },
+    { id:'p7', name:'加密货币指数基金', type:'crypto', reason:'区块链投资新机会，高波动高收益', risk_level:'high', min_investment:100_000, expected_return:'20%+', urgency:'low', action_label:'立即认购', blocked:false },
+];
+
+// ===== Product Detail Content (static, compliance-reviewed) =====
+const PRODUCT_DETAILS = {
+    p1: {
+        overview: '全球多元配置私募信贷基金精选全球顶级私募信贷管理人，通过跨地域、跨行业的信贷投资组合，为客户提供稳健的固定收益类回报。基金主要投向欧美中型企业的优先级担保贷款，平均贷款价值比（LTV）低于 50%。',
+        highlights: ['目标年化收益 8-10%，季度分红', '底层资产为优先级担保贷款，违约率历史低于 2%', '锁定 3 年，之后每季开放赎回', '管理规模 $2.8B，团队平均从业经验 18 年'],
+        risk_note: '中等风险（R3），非保本浮动收益，流动性较低。历史表现不代表未来收益。',
+        compliance_flag: '已通过合规审核 · 适合专业投资者',
+    },
+    p2: {
+        overview: '亚洲核心城市增值型商业地产基金聚焦东京、新加坡、悉尼等亚洲门户城市的甲级写字楼与物流地产，通过主动资产管理提升物业价值，获取资本增值与租金收益。',
+        highlights: ['目标年化收益 7-9%，含租金分红和退出增值', '底层物业出租率平均 92%+，租户质量 A 级', '募集规模 $500M，已投 12 个物业项目', '基金期限 5+2 年，封闭期后可转让份额'],
+        risk_note: '中等风险（R3），受商业地产周期影响，流动性较低。',
+        compliance_flag: '已通过合规审核 · 适合专业投资者',
+    },
+    p3: {
+        overview: '全球宏观对冲基金 B 类份额采用多元策略（全球宏观 + 相对价值 + 事件驱动），在利率、汇率、商品等多资产类别中寻找绝对收益机会，提供下行保护。',
+        highlights: ['目标年化收益 10-15%，低市场相关性', '成立 12 年，年化波动率控制在 8% 以内', '月度流动性，通知期 30 天', '管理规模 $1.5B，夏普比率 1.8'],
+        risk_note: '中高风险（R4），衍生品使用较多，存在杠杆风险。',
+        compliance_flag: '已通过合规审核 · 仅限专业投资者',
+    },
+    p4: {
+        overview: '新加坡离岸家族信托架构服务由资深家族办公室律师和税务顾问团队提供一站式规划，涵盖信托设立、资产转移、受益人安排、税务优化及持续合规管理。',
+        highlights: ['资产隔离与传承规划，规避继承法纠纷', '税务优化：新加坡境外收入免税，无资本利得税', '可指定保护人、投资委员会，保留资产控制权', '支持多币种、多司法辖区资产统一管理'],
+        risk_note: '本服务不涉及投资建议，具体架构需个案评估。费用按资产规模协商。',
+        compliance_flag: '法律与税务合规 · 需客户尽调',
+    },
+    p5: {
+        overview: '高流动性美元短债基金主要投资美国政府债券、投资级企业短债和高评级货币市场工具，组合久期不超过 1 年，提供类现金的流动性与增强收益。',
+        highlights: ['目标年化收益 4.5-5.5%，超美元存款利率', '每日开放申赎，T+2 到账', '组合久期 < 1 年，利率风险极低', '费用率 0.15%，远低于同类产品平均水平'],
+        risk_note: '低风险（R1），几乎无本金损失风险。收益随利率变动。',
+        compliance_flag: '已通过合规审核 · 适合所有合格投资者',
+    },
+    p6: {
+        overview: 'Pre-IPO 科技项目联合投资份额为合格投资人提供参与头部 AI/SaaS 科技公司上市前最后一轮融资的机会，由顶级 VC 领投，跟投方享有同等条款和权利。',
+        highlights: ['目标 IRR 15-25%，退出周期 2-4 年', '项目已获 Tier-1 VC 领投，尽调充分', '联合投资条款与领投方一致，无管理费', '过往同类项目 IRR 中位数 22%'],
+        risk_note: '高风险（R5），流动性极低，无保本承诺。仅在总投资组合中建议配置不超过 5%。',
+        compliance_flag: '仅限专业投资者 · 需签署风险确认书',
+    },
+};
+
+const exchangeRate = {
+    base: 'USD', rates: { HKD: 0.128, SGD: 0.74 }, date: TODAY, is_estimated: false,
+};
+
+// ========== Core Logic (mirrors hni_core/) ==========
+
+function convertToUSD(holdings, rates) {
+    return holdings.map(h => {
+        if (h.original_currency === 'USD') {
+            h.market_value_usd = h.market_value_original;
+        } else if (rates[h.original_currency]) {
+            h.market_value_usd = h.market_value_original * rates[h.original_currency];
+        } else {
+            h.market_value_usd = h.market_value_original;
+        }
+        return h;
+    });
+}
+
+function computeTotalValue(holdings) {
+    return holdings.reduce((sum, h) => sum + h.market_value_usd, 0);
+}
+
+function computeWeights(holdings) {
+    const total = computeTotalValue(holdings);
+    holdings.forEach(h => { h.weight = total > 0 ? h.market_value_usd / total : 0; });
+    return holdings;
+}
+
+function computeConcentration(holdings, topN = 5) {
+    const sorted = [...holdings].sort((a, b) => b.market_value_usd - a.market_value_usd);
+    const topValue = sorted.slice(0, topN).reduce((sum, h) => sum + h.market_value_usd, 0);
+    const total = computeTotalValue(holdings);
+    return total > 0 ? topValue / total : 0;
+}
+
+function computeVaR(holdings) {
+    const volatility = { equity:0.20, bond:0.05, vc:0.35, pe:0.25, hedge_fund:0.15, cash:0.01, real_estate:0.12 };
+    const total = computeTotalValue(holdings);
+    const zScore = 1.645;
+    let weightedVol = 0;
+    holdings.forEach(h => {
+        const vol = volatility[h.asset_class] || 0.15;
+        weightedVol += h.weight * vol;
+    });
+    return zScore * weightedVol * total;
+}
+
+function computeLiquidity(holdings) {
+    const liquid = holdings
+        .filter(h => ['cash', 'bond'].includes(h.asset_class))
+        .reduce((s, h) => s + h.market_value_usd, 0);
+    const futureCalls = holdings
+        .filter(h => ['vc', 'pe'].includes(h.asset_class))
+        .reduce((s, h) => s + h.unfunded_commitment, 0) * 0.5;
+    return futureCalls > 0 ? liquid / futureCalls : Infinity;
+}
+
+function computeAltRatio(holdings) {
+    const alt = holdings
+        .filter(h => ['vc', 'pe', 'hedge_fund', 'real_estate'].includes(h.asset_class))
+        .reduce((s, h) => s + h.market_value_usd, 0);
+    const total = computeTotalValue(holdings);
+    return total > 0 ? alt / total : 0;
+}
+
+function computeCurrencyExposure(holdings) {
+    const total = computeTotalValue(holdings);
+    const exp = {};
+    holdings.forEach(h => {
+        exp[h.original_currency] = (exp[h.original_currency] || 0) + h.market_value_usd / total;
+    });
+    return exp;
+}
+
+function computeLegacyScore(profile, holdings) {
+    let score = 0;
+    const rules = {};
+
+    // Age > 40: +20
+    if (profile.age > 40) { score += 20; rules.age = true; }
+
+    // Children > 0: +30
+    if (profile.children_count > 0) { score += 30; rules.children = true; }
+
+    // Lockup > 2 years: +20
+    const today = new Date();
+    const hasLongLockup = holdings.some(h => {
+        if (!['vc', 'pe', 'hedge_fund', 'real_estate'].includes(h.asset_class)) return false;
+        if (!h.locked_until) return false;
+        const remaining = (new Date(h.locked_until) - today) / (365 * 86400000);
+        return remaining > 2;
+    });
+    if (hasLongLockup) { score += 20; rules.lockup = true; }
+
+    // Cross-border > 2: +30
+    if (profile.cross_border_jurisdictions > 2) { score += 30; rules.crossBorder = true; }
+
+    return { score: Math.min(score, 100), rules };
+}
+
+function shouldPromptLegacy(profile, altRatio) {
+    if (profile.legacy_opt_out_until && new Date(profile.legacy_opt_out_until) >= new Date()) return false;
+    if (profile.legacy_prompt_frequency > 0) return false;
+    if (profile.total_assets_usd < 50_000_000) return false;
+    if (altRatio < 0.30) return false;
+    return true;
+}
+
+function generateRiskAlerts(holdings, profile, currencyExposure) {
+    const alerts = [];
+    const concentration = computeConcentration(holdings);
+    const altRatio = computeAltRatio(holdings);
+    const liquidity = computeLiquidity(holdings);
+    const total = computeTotalValue(holdings);
+
+    if (concentration > 0.60) {
+        alerts.push({ level:'high', category:'concentration', title:'持仓集中度偏高', description:`前5大持仓占总资产${(concentration*100).toFixed(0)}%，建议考虑分散化配置。` });
+    } else if (concentration > 0.40) {
+        alerts.push({ level:'medium', category:'concentration', title:'持仓集中度关注', description:`前5大持仓占比${(concentration*100).toFixed(0)}%，关注单一板块波动风险。` });
+    }
+
+    if (liquidity !== Infinity) {
+        if (liquidity < 0.30) {
+            alerts.push({ level:'high', category:'liquidity', title:'流动性覆盖率严重不足', description:`现金+美债仅覆盖未来6个月VC call的${(liquidity*100).toFixed(0)}%。建议立即补充流动性，已通知客户总监。` });
+        } else if (liquidity < 1.0) {
+            alerts.push({ level:'medium', category:'liquidity', title:'流动性覆盖率偏低', description:`现金+美债覆盖未来6个月VC call的${(liquidity*100).toFixed(0)}%。建议关注未缴款承诺的时间安排。` });
+        }
+    }
+
+    if (altRatio > 0.50) {
+        alerts.push({ level:'medium', category:'concentration', title:'另类资产占比过高', description:`VC/PE/对冲基金占比${(altRatio*100).toFixed(0)}%，流动性风险较高。` });
+    }
+
+    const nonUsd = 1 - (currencyExposure['USD'] || 0);
+    if (nonUsd > 0.10) {
+        alerts.push({ level:'medium', category:'currency', title:'非美元资产汇率敞口', description:`您目前有${(nonUsd*100).toFixed(0)}%资产为非美元计价，近期汇率波动较大。` });
+    }
+
+    // Cross-border currency alert
+    const currencies = new Set(holdings.map(h => h.original_currency));
+    const nonUsdCurrencies = [...currencies].filter(c => c !== 'USD');
+    const hasNonUsdBond = holdings.some(h => h.asset_class === 'bond' && h.original_currency !== 'USD');
+    if (nonUsdCurrencies.length >= 2 && hasNonUsdBond) {
+        const names = { HKD:'港元', SGD:'新币' };
+        const list = nonUsdCurrencies.map(c => names[c] || c).join('/');
+        alerts.push({ level:'medium', category:'legacy', title:'跨境资产结构提示', description:`您有${(nonUsd*100).toFixed(0)}%资产为${list}。若考虑跨境传承，可咨询离岸信托架构。` });
+    }
+
+    return alerts;
+}
+
+function matchProducts(holdings, products, legacyScore, profile, totalAssets) {
+    const matches = [];
+    const concentration = computeConcentration(holdings);
+    const liquidity = computeLiquidity(holdings);
+
+    const isBlocked = (p) => {
+        const blacklist = ['crypto', '加密货币', '数字资产', 'nft', 'token', '虚拟币', '挖矿', '区块链基金', 'defi'];
+        const text = (p.name + p.type + p.reason).toLowerCase();
+        return blacklist.some(kw => text.includes(kw.toLowerCase()));
+    };
+
+    // === Suitability Check ===
+    const MAX_INVESTMENT_RATIO = 0.20; // 单产品投资 ≤ 总资产 20%
+    const isSuitable = (p) => {
+        // Asset size gate: minimum investment cannot exceed 20% of total assets
+        if (totalAssets > 0 && p.min_investment > totalAssets * MAX_INVESTMENT_RATIO) {
+            return false;
+        }
+        // Risk tolerance: aggressive clients accept all levels
+        if (profile.risk_tolerance === 'aggressive') {
+            if (p.risk_level === 'high') {
+                p._highRiskWarning = true; // flag for UI warning
+            }
+            return true;
+        }
+        // Conservative: low risk only
+        if (profile.risk_tolerance === 'conservative') {
+            return p.risk_level === 'low';
+        }
+        // Moderate: low or medium
+        if (profile.risk_tolerance === 'moderate') {
+            return p.risk_level === 'low' || p.risk_level === 'medium';
+        }
+        return true;
+    };
+
+    const addProduct = (p) => {
+        if (!matches.find(m => m.id === p.id) && isSuitable(p)) {
+            matches.push(p);
+        }
+    };
+
+    // Liquidity
+    if (liquidity < 0.5) {
+        products.filter(p => ['short_term_bond'].includes(p.type)).forEach(addProduct);
+    }
+
+    // Concentration
+    if (concentration > 0.40) {
+        products.filter(p => ['private_credit', 'real_estate', 'hedge_fund'].includes(p.type)).forEach(addProduct);
+    }
+
+    // Legacy
+    if (legacyScore > 50) {
+        products.filter(p => ['family_trust', 'insurance', 'estate_planning'].includes(p.type)).forEach(addProduct);
+    }
+
+    // Aggressive
+    if (profile.risk_tolerance === 'aggressive' && matches.length < 3) {
+        products.filter(p => ['pre_ipo', 'vc_co_invest'].includes(p.type)).forEach(addProduct);
+    }
+
+    return matches.filter(p => !isBlocked(p));
+}
+
+function analyzeHotTopics(holdings, news) {
+    return news.map(n => {
+        // 1. Direct related_symbols matching
+        const directRelated = holdings.filter(h => n.related_symbols.includes(h.symbol));
+
+        // 2. Enhanced mapping-based matching
+        const mapRelated = [];
+        for (const map of HOTSPOT_HOLDING_MAP) {
+            const text = n.title + ' ' + n.summary;
+            const keywordHit = map.keywords.some(kw => text.includes(kw));
+            if (!keywordHit) continue;
+            const h = holdings.find(hh => hh.symbol === map.ticker);
+            if (h && !directRelated.find(d => d.symbol === h.symbol) && !mapRelated.find(m => m.symbol === h.symbol)) {
+                mapRelated.push({ ...h, mapDirection: map.direction, mapNarrative: map.narrative });
+            }
+        }
+
+        const allRelated = [...directRelated.map(h => ({ ...h, mapDirection: n.sentiment === 'positive' ? '利好' : (n.sentiment === 'negative' ? '利空' : '中性'), mapNarrative: '' })), ...mapRelated];
+
+        if (allRelated.length === 0) return null;
+
+        const confidence = Math.min(65 + allRelated.length * 12, 98);
+        const direction = { positive: '利好', negative: '利空', neutral: '中性影响' }[n.sentiment] || '中性影响';
+        const symbols = [...new Set(allRelated.map(r => r.symbol))];
+
+        // Build the best narrative from mapping
+        const bestNarrative = allRelated.find(r => r.mapNarrative);
+        const narrative = bestNarrative ? bestNarrative.mapNarrative : n.summary;
+
+        return {
+            news: n,
+            impact_direction: n.sentiment,
+            confidence,
+            related_holdings: symbols,
+            narrative,
+            mapDirection: bestNarrative ? bestNarrative.mapDirection : null,
+            summary: `${direction}您持仓中的${symbols.join('、')}，置信度${confidence}%。${narrative}`,
+        };
+    }).filter(Boolean);
+}
+
+// ========== UI Rendering ==========
+
+function fmtM(v) { return '$' + (v / 1_000_000).toFixed(1) + 'M'; }
+function fmtPct(v) { return (v * 100).toFixed(0) + '%'; }
+function fmtSignedPct(v) { return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; }
+
+let currentPush = null;
+let legacyOptOut = null;
+
+function generatePush() {
+    // ===== 数据模拟层（硬编码，不依赖外部变量）=====
+    // 单位：百万美元（value / unfundedCommitment）
+    const rawData = [
+        { symbol: 'NVDA',   name: 'NVIDIA',             value: 40, changePercent: -2.1, assetClass: 'equity', sector: 'technology',       lockedUntil: null,  unfundedCommitment: 0   },
+        { symbol: 'TSLA',   name: 'Tesla',              value: 12, changePercent: -1.5, assetClass: 'equity', sector: 'automotive',       lockedUntil: null,  unfundedCommitment: 0   },
+        { symbol: 'GOOGL',  name: 'Alphabet Inc.',      value: 8,  changePercent: 0.6,  assetClass: 'equity', sector: 'technology',       lockedUntil: null,  unfundedCommitment: 0   },
+        { symbol: 'VC_FUND',name: '红杉早期基金 X',       value: 8,  changePercent: 0,    assetClass: 'vc',     sector: 'venture_capital', lockedUntil: '2029-12-31', unfundedCommitment: 6.5 },
+        { symbol: 'CASH',   name: '美元现金',             value: 10, changePercent: 0,    assetClass: 'cash',   sector: 'cash',            lockedUntil: null,  unfundedCommitment: 0   },
+        { symbol: 'BOND',   name: '美国10年期国债',        value: 3,  changePercent: -0.3, assetClass: 'bond',   sector: 'government',      lockedUntil: null,  unfundedCommitment: 0   },
+    ];
+
+    // 当日热点模拟数据
+    const hotspotData = [
+        { title: 'AMD 发布新 AI 芯片 MI400', relatedSymbol: 'NVDA',  impactDirection: 'negative', confidence: 85, summary: '竞争加剧，NVDA 短期承压' },
+        { title: '美联储暗示 9 月降息',       relatedSymbol: 'GOOGL', impactDirection: 'positive', confidence: 70, summary: '降息预期利好科技股估值' },
+    ];
+
+    // ===== 构建加权持仓（兼容旧格式）=====
+    const totalValueM = rawData.reduce((s, h) => s + h.value, 0); // 40+12+8+8+10+3 = 81M
+    rawData.forEach(h => { h.weight = h.value / totalValueM; });
+
+    const weighted = rawData.map(h => ({
+        symbol:             h.symbol,
+        name:               h.name,
+        asset_class:        h.assetClass,
+        market_value_usd:   h.value * 1_000_000,
+        weight:             h.weight,
+        change_percent:     h.changePercent,
+        unfunded_commitment: (h.unfundedCommitment || 0) * 1_000_000,
+        locked_until:       h.lockedUntil || null,
+        original_currency:  'USD',
+        sector:             h.sector || 'other',
+    }));
+
+    const total = totalValueM * 1_000_000;
+
+    // ===== 1. 集中度：前三大持仓占比（按 market_value_usd 排序）=====
+    const sortedByValue = [...weighted].sort((a, b) => b.market_value_usd - a.market_value_usd);
+    const top3Value = sortedByValue.slice(0, 3).reduce((s, h) => s + h.market_value_usd, 0);
+    const concentration = top3Value / total;
+
+    // ===== 2. VaR（简化版：equity 波动率 0.25，其他 0.05）=====
+    const EQUITY_VOL = 0.25;
+    const OTHER_VOL  = 0.05;
+    let portfolioVariance = 0;
+    weighted.forEach(h => {
+        const vol = h.asset_class === 'equity' ? EQUITY_VOL : OTHER_VOL;
+        portfolioVariance += Math.pow(h.weight * vol, 2);
+    });
+    const portfolioVol = Math.sqrt(portfolioVariance);
+    const var95 = 1.645 * portfolioVol * total;
+
+    // ===== 3. 流动性覆盖率：现金 / (VC 未缴款承诺 × 0.5) =====
+    const cashTotal = weighted.filter(h => h.asset_class === 'cash').reduce((s, h) => s + h.market_value_usd, 0);
+    const vcUnfunded = weighted.filter(h => h.asset_class === 'vc').reduce((s, h) => s + h.unfunded_commitment, 0);
+    const liquidity = vcUnfunded > 0 ? cashTotal / (vcUnfunded * 0.5) : Infinity;
+
+    // ===== 4. 传承评分（硬编码：age 42 +20, children 2 +30, locked VC +20, 3 jurisdictions +30 = 100）=====
+    const legacyScore = Math.min(20 + 30 + 20 + 30, 100);
+    const legacyResult = { score: legacyScore, rules: { age: true, children: true, lockup: true, crossBorder: true } };
+    const showLegacy = legacyScore > 50;
+
+    // ===== 日变动 =====
+    const dailyChange = weighted.reduce((s, h) => s + h.market_value_usd * h.change_percent / 100, 0);
+    const dailyChangePct = weighted.reduce((s, h) => s + h.weight * h.change_percent, 0);
+
+    // ===== 另类资产占比 =====
+    const altValue = weighted.filter(h => ['vc', 'pe', 'hedge_fund', 'real_estate'].includes(h.asset_class))
+        .reduce((s, h) => s + h.market_value_usd, 0);
+    const altRatio = total > 0 ? altValue / total : 0;
+
+    // ===== 币种敞口（全 USD）=====
+    const currencyExp = { USD: 1.0 };
+
+    // ===== 风险告警 =====
+    const alerts = [];
+    if (concentration > 0.60) {
+        const topNames = sortedByValue.slice(0, 3).map(h => h.symbol).join('、');
+        alerts.push({ level: 'high', category: 'concentration', title: '持仓集中度偏高', description: `前三大持仓（${topNames}）占总资产${(concentration*100).toFixed(0)}%，建议分散化配置。` });
+    } else if (concentration > 0.40) {
+        alerts.push({ level: 'medium', category: 'concentration', title: '持仓集中度关注', description: `前三大持仓占比${(concentration*100).toFixed(0)}%，关注单一板块波动风险。` });
+    }
+    if (var95 > 10_000_000) {
+        alerts.push({ level: 'high', category: 'risk', title: '组合 VaR 超限', description: `当前 95% VaR 为 ${fmtM(var95)}，超过 $10M 阈值，建议评估下行风险敞口。` });
+    } else if (var95 > 5_000_000) {
+        alerts.push({ level: 'medium', category: 'risk', title: '组合 VaR 偏高', description: `当前 95% VaR 为 ${fmtM(var95)}，接近行业平均水平，持续关注。` });
+    }
+    if (liquidity !== Infinity && liquidity < 0.5) {
+        const callAmount = vcUnfunded * 0.5;
+        alerts.push({ level: 'high', category: 'liquidity', title: '流动性覆盖率严重不足', description: `未来 3 个月 VC 基金预计 call ${fmtM(callAmount)}，现金仅覆盖 ${(liquidity*100).toFixed(0)}%。已通知客户总监。` });
+    } else if (liquidity !== Infinity && liquidity < 1.0) {
+        alerts.push({ level: 'medium', category: 'liquidity', title: '流动性覆盖率偏低', description: `现金覆盖未来 VC call 的 ${(liquidity*100).toFixed(0)}%。建议关注未缴款承诺的时间安排。` });
+    }
+    if (altRatio > 0.50) {
+        alerts.push({ level: 'medium', category: 'concentration', title: '另类资产占比过高', description: `VC/PE/对冲基金占比${(altRatio*100).toFixed(0)}%，流动性风险较高。` });
+    }
+
+    // ===== 热点-持仓联动 =====
+    const hotTopics = hotspotData.map(h => ({
+        news: {
+            title: h.title,
+            summary: h.summary,
+            related_symbols: [h.relatedSymbol],
+            sentiment: h.impactDirection,
+            impact: h.confidence >= 80 ? 'high' : 'medium',
+            timestamp: TODAY,
+        },
+        impact_direction: h.impactDirection,
+        confidence: h.confidence,
+        related_holdings: [h.relatedSymbol],
+        summary: h.summary,
+        narrative: h.summary,
+        mapDirection: h.impactDirection === 'positive' ? '利好' : (h.impactDirection === 'negative' ? '利空' : '中性'),
+    }));
+
+    // ===== 产品匹配（优先级规则：流动性 < 集中度 < 传承）=====
+    let product = null;
+    if (liquidity !== Infinity && liquidity < 0.5) {
+        product = { id: 'p5', name: '高流动性美元短债基金', reason: '应对 VC capital call，保持流动性' };
+    } else if (concentration > 0.60) {
+        product = { id: 'p1', name: '全球多元配置私募信贷基金', reason: '分散科技股集中度风险' };
+    } else if (legacyScore > 70) {
+        product = { id: 'p4', name: '新加坡离岸家族信托架构服务', reason: '跨境资产传承规划' };
+    }
+
+    // ===== 构建风险/机会项（按优先级：流动性预警 > 集中度风险 > VaR 提示 > 热点影响）=====
+    const riskItems = [];
+
+    if (liquidity !== Infinity && liquidity < 0.5) {
+        riskItems.push({ priority: 1, icon: '🔴', text: `流动性预警：现金仅覆盖未来 VC call 的 ${(liquidity*100).toFixed(0)}%` });
+    }
+    if (concentration > 0.60) {
+        const topNames = sortedByValue.slice(0, 3).map(h => h.symbol).join('、');
+        riskItems.push({ priority: 2, icon: '⚠️', text: `集中度风险：前三大持仓（${topNames}）占比 ${(concentration*100).toFixed(0)}%，远超行业均值` });
+    } else if (concentration > 0.40) {
+        riskItems.push({ priority: 2, icon: '⚡', text: `集中度关注：前三大持仓占比 ${(concentration*100).toFixed(0)}%，需留意板块波动` });
+    }
+    if (var95 > 10_000_000) {
+        riskItems.push({ priority: 3, icon: '📉', text: `VaR 提示：95% VaR ${fmtM(var95)}，超过 $10M 阈值，下行风险偏高` });
+    } else if (var95 > 5_000_000) {
+        riskItems.push({ priority: 3, icon: '📊', text: `VaR 提示：95% VaR ${fmtM(var95)}，接近行业平均，持续关注` });
+    }
+    hotspotData.forEach(h => {
+        const direction = h.impactDirection === 'negative' ? '利空' : '利好';
+        const icon = h.impactDirection === 'negative' ? '🔻' : '🟢';
+        riskItems.push({ priority: 4, icon: icon, text: `${h.title}（${direction} ${h.relatedSymbol}，置信度 ${h.confidence}%）` });
+    });
+    riskItems.sort((a, b) => a.priority - b.priority);
+
+    // ===== 最大涨跌个股 =====
+    const equityMovers = weighted.filter(h => h.asset_class === 'equity')
+        .sort((a, b) => Math.abs(b.change_percent) - Math.abs(a.change_percent));
+    const topMover = equityMovers.length > 0 && Math.abs(equityMovers[0].change_percent) >= 0.3 ? equityMovers[0] : null;
+
+    const cfg = loadPushConfig();
+
+    // ===== 构建推送数据对象 =====
+    const pushData = {
+        dailyChangePct,
+        dailyChange,
+        total,
+        topMover,
+        riskItems,
+        product,
+        legacyScore,
+        pushTime: cfg.pushTime || '09:00',
+    };
+
+    // ===== 高风险推送标记（console only）=====
+    if (var95 > 10_000_000 || liquidity < 0.3) {
+        console.log('[REVIEW] High-risk push flagged:',
+            var95 > 10_000_000 ? 'VaR=' + fmtM(var95) + ' exceeds $10M' : '',
+            liquidity < 0.3 ? 'Liquidity=' + fmtPct(liquidity) + ' below 30%' : '');
+    }
+
+    // ===== 渲染手机推送 =====
+    renderPhonePush(pushData);
+
+    // 存储当前推送状态
+    currentPush = pushData;
+
+    showToast('✅ 推送已生成');
+    trackEvent('push', 'push_generated', 'V2');
+    savePushHistory(dailyChangePct, product, riskItems, var95, concentration);
+}
+
+/*
+function updateBenchmark(holdings, concentration, var95, total, currencyExp) {
+    // ---- Client annualized return: asset-class weighted ----
+    const ANNUAL_RETURN_MAP = {
+        equity: { NVDA: 25, GOOGL: 15, TSLA: 20 },
+        bond: 4, vc: 12, pe: 12, hedge_fund: 10, cash: 3, real_estate: 8,
+    };
+    let weightedReturn = 0;
+    if (total > 0) {
+        for (const h of holdings) {
+            let ret = 0;
+            if (h.asset_class === 'equity' && ANNUAL_RETURN_MAP.equity[h.symbol]) {
+                ret = ANNUAL_RETURN_MAP.equity[h.symbol];
+            } else if (typeof ANNUAL_RETURN_MAP[h.asset_class] === 'number') {
+                ret = ANNUAL_RETURN_MAP[h.asset_class];
+            }
+            weightedReturn += ret * (h.market_value_usd / total);
+        }
+    }
+    const clientAnnual = weightedReturn;
+
+    // Non-USD exposure
+    const nonUsd = (1 - (currencyExp['USD'] || 0)) * 100;
+
+    // ---- Benchmarks ----
+    const benchConcentration = 45;         // 同类平均集中度 45%
+    const benchVaR = 4_500_000;            // 行业平均 VaR 固定 $4.5M
+    const benchSP500 = 12;                 // 标普500年化 +12%
+    const benchNonUsdCap = 20;             // 建议上限 20%
+
+    // ---- Color logic ----
+    function colorClass(val, bench, lowerBetter) {
+        if (lowerBetter) {
+            return val < bench ? 'good' : (val < bench * 1.3 ? 'warn' : 'bad');
+        } else {
+            return val > bench ? 'good' : (val > bench * 0.7 ? 'warn' : 'bad');
+        }
+    }
+
+    // ---- Render ----
+    const grid = document.getElementById('benchmarkGrid');
+    grid.innerHTML = [
+        {
+            label: '集中度',
+            client: fmtPct(concentration),
+            bench: '同类平均 ' + fmtPct(benchConcentration / 100),
+            cls: colorClass(concentration * 100, benchConcentration, true),
+        },
+        {
+            label: '组合 VaR',
+            client: fmtM(var95),
+            bench: '行业平均 ' + fmtM(benchVaR),
+            cls: colorClass(var95, benchVaR, true),
+        },
+        {
+            label: '年化收益',
+            client: '+' + clientAnnual.toFixed(1) + '%',
+            bench: '标普500 +' + benchSP500.toFixed(0) + '%',
+            cls: colorClass(clientAnnual, benchSP500, false),
+        },
+        {
+            label: '非USD敞口',
+            client: nonUsd.toFixed(1) + '%',
+            bench: '建议上限 ' + benchNonUsdCap + '%',
+            cls: colorClass(nonUsd, benchNonUsdCap, true),
+        },
+    ].map(item => `
+        <div class="benchmark-item">
+            <div class="bm-label">${item.label}</div>
+            <div class="bm-client ${item.cls}">${item.client}</div>
+            <div class="bm-bench">${item.bench}</div>
+        </div>
+    `).join('')
+    + '<div style="text-align:center;font-size:10px;color:var(--text-muted);margin-top:8px;">模拟数据，仅供参考</div>';
+}
+*/
+
+/*
+function updateSpecialAssetStatus(holdings) {
+    const container = document.getElementById('specialAssetList');
+    let html = '';
+
+    // Simulate next capital call dates
+    const today = new Date();
+    const simulateNextCall = (monthsAhead) => {
+        const d = new Date(today);
+        d.setMonth(d.getMonth() + monthsAhead);
+        return d.toISOString().split('T')[0];
+    };
+
+    // ---- VC funds ----
+    const vcFunds = holdings.filter(h => h.asset_class === 'vc' && (h.unfunded_commitment > 0 || h.locked_until));
+    if (vcFunds.length > 0) {
+        const totalUnfunded = vcFunds.reduce((s, h) => s + (h.unfunded_commitment || 0), 0);
+        const nextCallDate = simulateNextCall(3);
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:rgba(231,76,60,0.06);border-left:3px solid rgba(231,76,60,0.5);border-radius:0 6px 6px 0;">';
+        html += '<div style="font-weight:600;margin-bottom:4px;">🏦 创投基金 (VC)</div>';
+        vcFunds.forEach(h => {
+            html += `<div style="margin-bottom:3px;">• <strong>${h.name}</strong> — 估值 $${fmtM(h.market_value_usd)}${h.unfunded_commitment > 0 ? '，未缴款 $' + fmtM(h.unfunded_commitment) : ''}</div>`;
+        });
+        html += `<div style="margin-top:4px;font-size:10px;color:var(--warning);">⚠️ 未缴款承诺合计 $${fmtM(totalUnfunded)}，预估下次 call 时间 ${nextCallDate}（未来 3 个月）</div>`;
+        html += '</div>';
+    }
+
+    // ---- PE funds ----
+    const peFunds = holdings.filter(h => h.asset_class === 'pe');
+    if (peFunds.length > 0) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:rgba(241,196,15,0.06);border-left:3px solid rgba(241,196,15,0.5);border-radius:0 6px 6px 0;">';
+        html += '<div style="font-weight:600;margin-bottom:4px;">🏗️ 私募股权 (PE)</div>';
+        peFunds.forEach(h => {
+            const lockInfo = h.locked_until ? `锁定至 ${h.locked_until}，流动性受限` : '无锁定期限制';
+            html += `<div style="margin-bottom:3px;">• <strong>${h.name}</strong> — 估值 $${fmtM(h.market_value_usd)}，${lockInfo}${h.unfunded_commitment > 0 ? '，未缴款 $' + fmtM(h.unfunded_commitment) : ''}</div>`;
+        });
+        html += '</div>';
+    }
+
+    // ---- Hedge funds ----
+    const hedgeFunds = holdings.filter(h => h.asset_class === 'hedge_fund');
+    if (hedgeFunds.length > 0) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:rgba(52,152,219,0.06);border-left:3px solid rgba(52,152,219,0.5);border-radius:0 6px 6px 0;">';
+        html += '<div style="font-weight:600;margin-bottom:4px;">📊 对冲基金</div>';
+        hedgeFunds.forEach(h => {
+            const nextOpen = simulateNextCall(3);
+            let redemptionInfo = '季度赎回';
+            if (h.name.includes('桥水') || h.name.includes('Bridgewater')) {
+                redemptionInfo = '季度赎回，下次开放日 2026-09-30';
+            }
+            html += `<div style="margin-bottom:3px;">• <strong>${h.name}</strong> — 估值 $${fmtM(h.market_value_usd)}，${redemptionInfo}</div>`;
+        });
+        html += '</div>';
+    }
+
+    // ---- Private credit / real estate ----
+    const creditFunds = holdings.filter(h => h.asset_class === 'private_credit' || h.asset_class === 'real_estate');
+    if (creditFunds.length > 0) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:rgba(155,89,182,0.06);border-left:3px solid rgba(155,89,182,0.5);border-radius:0 6px 6px 0;">';
+        html += '<div style="font-weight:600;margin-bottom:4px;">🏠 另类投资（信贷/地产）</div>';
+        creditFunds.forEach(h => {
+            const typeLabel = h.asset_class === 'private_credit' ? '私募信贷' : '地产基金';
+            const lockInfo = h.locked_until ? `锁定至 ${h.locked_until}` : '季度赎回窗口';
+            html += `<div style="margin-bottom:3px;">• <strong>${h.name}</strong> (${typeLabel}) — 估值 $${fmtM(h.market_value_usd)}，${lockInfo}，流动性较低</div>`;
+        });
+        html += '</div>';
+    }
+
+    // ---- Bonds with lock-up ----
+    const lockedBonds = holdings.filter(h => h.asset_class === 'bond' && h.locked_until);
+    if (lockedBonds.length > 0) {
+        html += '<div style="padding:8px 10px;background:rgba(46,204,113,0.06);border-left:3px solid rgba(46,204,113,0.5);border-radius:0 6px 6px 0;">';
+        html += '<div style="font-weight:600;margin-bottom:4px;">📜 锁定债券</div>';
+        lockedBonds.forEach(h => {
+            html += `<div style="margin-bottom:3px;">• <strong>${h.name}</strong> — 估值 $${fmtM(h.market_value_usd)}，锁定至 ${h.locked_until}</div>`;
+        });
+        html += '</div>';
+    }
+
+    if (!html) {
+        html = '<div style="color:var(--text-muted);font-style:italic;">无特殊资产信息...</div>';
+    }
+
+    container.innerHTML = html;
+}
+*/
+
+function renderPhonePush(data) {
+    const { dailyChangePct, dailyChange, total, topMover, riskItems, product, legacyScore, pushTime } = data;
+    const screen = document.getElementById('phoneScreen');
+
+    // ---- 情感化问候语 ----
+    function buildGreeting() {
+        const hour = parseInt(pushTime.split(':')[0]);
+        if (dailyChangePct > 0.5) {
+            return '恭喜 David，您的组合今日跑赢大盘 🎉';
+        } else if (dailyChangePct < -1) {
+            return 'David，市场波动较大，但别担心，您的持仓基本面稳固。';
+        }
+        return 'David，您的组合今日小幅波动，以下是关注点。';
+    }
+
+    let html = '';
+
+    // 时间戳 + 问候
+    html += '<div class="chat-time">' + TODAY + ' ' + pushTime + '</div>';
+    html += '<div class="chat-bubble system">' + buildGreeting() + '</div>';
+
+    // ---- 卡片 1：今日表现 ----
+    const pctCls = dailyChangePct >= 0 ? 'up' : 'down';
+    const pctSign = dailyChangePct >= 0 ? '+' : '';
+    html += '<div class="phone-card">';
+    html += '<div class="phone-card-header">📊 今日表现</div>';
+    html += '<div class="insight-big-number ' + pctCls + '">' + pctSign + dailyChangePct.toFixed(1) + '%</div>';
+    html += '<div class="phone-card-label">较昨日 ' + (dailyChange >= 0 ? '+' : '') + '$' + fmtM(Math.abs(dailyChange)) + '</div>';
+    if (topMover) {
+        const sign = topMover.change_percent >= 0 ? '+' : '';
+        const cls = topMover.change_percent >= 0 ? 'up' : 'down';
+        html += '<div class="phone-card-body" style="margin-top:8px;">' + topMover.symbol + ' ' + (topMover.change_percent >= 0 ? '推动' : '拖累') + ' <span style="color:' + (topMover.change_percent >= 0 ? 'var(--success)' : 'var(--danger)') + ';">' + sign + topMover.change_percent.toFixed(1) + '%</span></div>';
+    }
+    html += '</div>';
+
+    // ---- 卡片 2：关键风险/机会（按优先级：流动性预警 > 集中度风险 > VaR 提示 > 热点影响）----
+    html += '<div class="phone-card">';
+    html += '<div class="phone-card-header">⚡ 关键风险/机会</div>';
+    if (riskItems.length > 0) {
+        html += '<div class="phone-card-body">';
+        riskItems.forEach(function(item) {
+            html += '<div style="margin-bottom:4px;line-height:1.5;">' + item.icon + ' ' + item.text + '</div>';
+        });
+        html += '</div>';
+    } else {
+        html += '<div class="phone-card-body">今日暂无显著风险信号，组合运行平稳。</div>';
+    }
+    html += '</div>';
+
+    // ---- 卡片 3：行动建议 ----
+    html += '<div class="phone-card">';
+    html += '<div class="phone-card-header">💡 行动建议</div>';
+    if (product) {
+        html += '<div class="phone-card-body">建议关注 <strong style="color:var(--gold-light);">' + product.name + '</strong>，' + product.reason + '</div>';
+        html += '<div style="margin-top:10px;">';
+        html += '<span class="phone-action-btn" onclick="createProductInquiry(\'' + product.id + '\',\'' + product.name.replace(/'/g, "\\'") + '\')">了解分散方案</span>';
+        html += '</div>';
+        if (legacyScore > 70) {
+            html += '<div style="margin-top:8px;">';
+            html += '<span class="phone-action-btn" style="background:transparent;color:var(--gold);border:1px solid var(--gold);" onclick="handleLegacyReply()">传承规划</span>';
+            html += '</div>';
+        }
+    } else {
+        html += '<div class="phone-card-body">保持现有配置，持续关注市场动态即可。</div>';
+    }
+    html += '</div>';
+
+    // ---- 合规声明 ----
+    html += '<div style="font-size:10px;color:var(--text-muted);text-align:center;margin:16px 0;padding:10px 8px;border-top:1px solid rgba(255,255,255,0.04);">';
+    html += '投资涉及风险，过往业绩不代表未来表现。本内容仅供参考，不构成投资建议。';
+    html += '</div>';
+
+    screen.innerHTML = html;
+    screen.scrollTop = 0;
+}
+
+function toggleFullContent() {
+    var summary = document.getElementById('summaryView');
+    var full = document.getElementById('fullContent');
+    var isExpanded = full.style.display !== 'none';
+
+    if (isExpanded) {
+        // Collapse: show summary, hide full
+        summary.style.display = 'block';
+        full.style.display = 'none';
+        var btn = summary.querySelector('.phone-expand-link');
+        if (btn) btn.textContent = '展开详细报告';
+    } else {
+        // Expand: hide summary, show full
+        summary.style.display = 'none';
+        full.style.display = 'block';
+        var btn = full.querySelector('.phone-expand-link');
+        if (btn) btn.textContent = '收起详细报告';
+        trackEvent('interaction', 'expand_content', 'full');
+    }
+    document.getElementById('phoneScreen').scrollTop = 0;
+}
+
+function createProductInquiry(productId, productName) {
+    const screen = document.getElementById('phoneScreen');
+    const ticketId = 'TICK-' + Date.now().toString(36).toUpperCase().slice(-6);
+    const timestamp = new Date().toLocaleString('zh-CN');
+
+    // 存储工单到 localStorage
+    try {
+        const orders = JSON.parse(localStorage.getItem('hni_workOrders') || '[]');
+        orders.push({ ticketId, productId, productName, timestamp, status: '待处理' });
+        if (orders.length > 50) orders.splice(0, orders.length - 50);
+        localStorage.setItem('hni_workOrders', JSON.stringify(orders));
+    } catch(e) {}
+
+    // Add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'chat-bubble user';
+    userMsg.textContent = '我想了解「' + productName + '」';
+    screen.appendChild(userMsg);
+
+    // Add system reply — closed-loop notification
+    const sysMsg = document.createElement('div');
+    sysMsg.className = 'chat-bubble system';
+    sysMsg.innerHTML = '✅ 已为您创建咨询工单（ID: <strong style="color:var(--gold-light);">' + ticketId + '</strong>），顾问将在 10 分钟内响应。';
+    screen.appendChild(sysMsg);
+
+    // Simulate backend notification
+    console.log('[PUSH] 模拟发送顾问通知:', {
+        to: 'advisor.david@hnipartners.com.hk',
+        ticketId: ticketId,
+        product: productName,
+        timestamp: timestamp,
+        channel: '飞书 + 邮件'
+    });
+
+    // Scroll to bottom
+    screen.scrollTop = screen.scrollHeight;
+
+    // Toast
+    showToast('✅ 已为您创建咨询工单，顾问将在 10 分钟内响应。');
+    trackEvent('conversion', 'product_inquiry', productId);
+}
+
+// ===== Work Order System =====
+const WORK_ORDER_TYPES = {
+    product_inquiry: { icon: '💼', label: '产品咨询' },
+    legacy_consult: { icon: '📜', label: '传承咨询' },
+};
+
+/*
+function loadWorkOrders() {
+    try { return JSON.parse(localStorage.getItem('hni_workOrders') || '[]'); }
+    catch(e) { return []; }
+}
+*/
+
+/*
+function saveWorkOrders(orders) {
+    localStorage.setItem('hni_workOrders', JSON.stringify(orders));
+}
+*/
+
+/*
+function markOrderDone(orderId) {
+    const orders = loadWorkOrders();
+    const idx = orders.findIndex(o => o.id === orderId);
+    if (idx >= 0) {
+        orders[idx].status = '已处理';
+        saveWorkOrders(orders);
+        refreshTicketHistory();
+        showToast('✅ 工单 ' + orderId + ' 已标记为已处理');
+    }
+}
+*/
+
+/*
+function clearCompletedOrders() {
+    let orders = loadWorkOrders();
+    const before = orders.length;
+    orders = orders.filter(o => o.status !== '已处理');
+    saveWorkOrders(orders);
+    refreshTicketHistory();
+    showToast('已清除 ' + (before - orders.length) + ' 条已处理工单');
+}
+*/
+
+/*
+function refreshTicketHistory() {
+    const card = document.getElementById('ticketHistoryCard');
+    const list = document.getElementById('ticketList');
+    const countEl = document.getElementById('ticketCount');
+    const clearBtn = document.getElementById('clearDoneBtn');
+
+    const orders = loadWorkOrders();
+    // Also migrate old hni_tickets data on first load
+    try {
+        const oldTickets = JSON.parse(localStorage.getItem('hni_tickets') || '[]');
+        if (oldTickets.length > 0) {
+            oldTickets.forEach(t => {
+                if (!orders.find(o => o.id === t.id)) {
+                    orders.push({ id: t.id, type: 'product_inquiry', productId: t.productId, productName: t.productName, timestamp: t.timestamp, status: t.status === 'pending' ? '待跟进' : t.status });
+                }
+            });
+            localStorage.removeItem('hni_tickets');
+            saveWorkOrders(orders);
+        }
+    } catch(e) {}
+
+    if (orders.length === 0) {
+        card.style.display = 'none';
+        return;
+    }
+
+    const pending = orders.filter(o => o.status !== '已处理').length;
+    const done = orders.filter(o => o.status === '已处理').length;
+
+    card.style.display = '';
+    countEl.textContent = pending + ' 跟进 / ' + done + ' 已处理';
+    clearBtn.style.display = done > 0 ? '' : 'none';
+
+    // Show last 5, newest first
+    const recent = orders.slice(-5).reverse();
+    list.innerHTML = recent.map(o => {
+        const typeInfo = WORK_ORDER_TYPES[o.type] || { icon: '📋', label: '通用' };
+        const isDone = o.status === '已处理';
+        return `
+        <div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:11px;${isDone ? 'opacity:0.5;' : ''}">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+                <span>
+                    <span style="color:var(--gold-light);font-family:monospace;">${o.id}</span>
+                    <span style="margin-left:6px;color:var(--text-muted);">${typeInfo.icon} ${typeInfo.label}</span>
+                </span>
+                <span style="font-size:10px;${isDone ? 'color:var(--success);' : 'color:var(--warning);'}">${o.status}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="color:var(--text-secondary);">${o.productName}</span>
+                <span style="color:var(--text-muted);font-size:10px;">${o.timestamp.split(' ')[0]}</span>
+            </div>
+            ${!isDone ? '<button onclick="markOrderDone(\'' + o.id + '\')" style="margin-top:4px;padding:2px 10px;background:transparent;border:1px solid var(--success);color:var(--success);font-size:10px;border-radius:3px;cursor:pointer;">✓ 标记已处理</button>' : ''}
+        </div>
+    `;
+    }).join('');
+}
+*/
+
+// ===== Product Detail Modal =====
+function openProductModal(productId, productName) {
+    const detail = PRODUCT_DETAILS[productId];
+    if (!detail) { showToast('产品详情暂不可用'); return; }
+
+    const riskClass = { low: '🟢 低风险', medium: '🟡 中等风险', high: '🔴 高风险' };
+    const riskLabel = productCatalog.find(p => p.id === productId);
+    const riskText = riskLabel ? (riskClass[riskLabel.risk_level] || riskLabel.risk_level) : '';
+
+    document.getElementById('modalContent').innerHTML = `
+        <button class="modal-close" onclick="closeProductModal()">&times;</button>
+        <div class="modal-title">${productName}</div>
+        <div>
+            <span class="modal-tag">${riskText}</span>
+            <span class="modal-tag">${detail.compliance_flag}</span>
+        </div>
+        <div class="modal-section">
+            <h4>产品概述</h4>
+            <p>${detail.overview}</p>
+        </div>
+        <div class="modal-section">
+            <h4>核心亮点</h4>
+            <ul>
+                ${detail.highlights.map(h => '<li>' + h + '</li>').join('')}
+            </ul>
+        </div>
+        <div class="modal-section">
+            <h4>风险提示</h4>
+            <p style="color:var(--warning);">${detail.risk_note}</p>
+        </div>
+        <div class="modal-actions">
+            <button class="product-btn primary" onclick="closeProductModal();createProductInquiry('${productId}', '${productName.replace(/'/g, "\\'")}')">预约顾问</button>
+            <button class="product-btn" onclick="window.open('mailto:advisor@hnipartners.com.hk?subject=咨询 ${productName.replace(/'/g, "\\'")}', '_blank')">📧 一键沟通</button>
+        </div>
+    `;
+
+    document.getElementById('productModal').classList.add('show');
+}
+
+function closeProductModal() {
+    document.getElementById('productModal').classList.remove('show');
+}
+
+function dismissProduct(productId) {
+    const card = document.getElementById('product-' + productId);
+    if (card) {
+        card.classList.add('dismissed');
+    }
+    // Persist to localStorage
+    let dismissedIds = [];
+    try {
+        const stored = localStorage.getItem('hni_dismissed_products');
+        if (stored) dismissedIds = JSON.parse(stored);
+    } catch(e) {}
+    if (!dismissedIds.includes(productId)) {
+        dismissedIds.push(productId);
+        localStorage.setItem('hni_dismissed_products', JSON.stringify(dismissedIds));
+    }
+    showToast('已标记为不感兴趣');
+}
+
+function resetDismissedProducts() {
+    localStorage.removeItem('hni_dismissed_products');
+    generatePush();
+    showToast('已重置所有忽略产品');
+}
+
+// ===== Push History =====
+function savePushHistory(dailyChangePct, product, riskItems, var95, concentration) {
+    const summary = [];
+    const sign = dailyChangePct >= 0 ? '+' : '';
+    summary.push('组合' + sign + dailyChangePct.toFixed(1) + '%');
+    // 主要风险（取最高优先级的一条）
+    if (riskItems && riskItems.length > 0) {
+        summary.push(riskItems[0].text);
+    }
+    if (product) {
+        summary.push('推荐' + product.name);
+    }
+    const entry = {
+        date: TODAY,
+        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+        dailyChange: dailyChangePct,
+        var95: var95,
+        concentration: concentration,
+        summary: summary.join('；'),
+        product: product ? product.name : null,
+    };
+
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('pushHistory') || '[]');
+    } catch(e) {}
+    history.unshift(entry);
+    if (history.length > 5) history = history.slice(0, 5);
+    localStorage.setItem('pushHistory', JSON.stringify(history));
+}
+
+function openHistory() {
+    const listEl = document.getElementById('historyList');
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('pushHistory') || '[]');
+    } catch(e) {}
+
+    if (history.length === 0) {
+        listEl.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">暂无历史记录</div>';
+    } else {
+        listEl.innerHTML = history.map((h, i) => {
+            const pctCls = h.dailyChange >= 0 ? 'up' : 'down';
+            const pctSign = h.dailyChange >= 0 ? '+' : '';
+            return `
+                <div style="padding:10px 12px;margin-bottom:6px;background:rgba(255,255,255,0.03);border-radius:8px;cursor:pointer;transition:all 0.2s;"
+                     onmouseover="this.style.background='rgba(255,255,255,0.06)'"
+                     onmouseout="this.style.background='rgba(255,255,255,0.03)'"
+                     onclick="loadHistoryEntry(${i})">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:12px;color:var(--text-primary);">${h.date} ${h.time}</span>
+                        <span style="font-size:13px;font-weight:600;color:${h.dailyChange >= 0 ? 'var(--success)' : 'var(--danger)'};">${pctSign}${h.dailyChange.toFixed(1)}%</span>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${h.summary}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    document.getElementById('historyModal').classList.add('show');
+}
+
+function loadHistoryEntry(index) {
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('pushHistory') || '[]');
+    } catch(e) {}
+    if (index >= 0 && index < history.length) {
+        const h = history[index];
+        showToast('📜 历史推送：' + h.date + ' ' + h.time + ' — ' + h.summary);
+    }
+    closeHistory();
+}
+
+function closeHistory() {
+    document.getElementById('historyModal').classList.remove('show');
+}
+
+function clearHistory() {
+    localStorage.removeItem('pushHistory');
+    document.getElementById('historyList').innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">暂无历史记录</div>';
+    showToast('已清空推送历史');
+}
+
+function refreshAll() {
+    generatePush();
+    showToast('✅ 数据已刷新');
+}
+
+function toggleLegacy() {
+    if (!currentPush) {
+        showToast('请先生成推送');
+        return;
+    }
+
+    if (legacyOptOut) {
+        legacyOptOut = null;
+        showToast('已恢复传承提示');
+        generatePush();
+        return;
+    }
+
+    // Simulate legacy interaction
+    handleLegacyReply('传承');
+}
+
+function sendToFeishu() {
+    if (!currentPush) {
+        showNotify('error', '❌ 请先生成推送内容');
+        return;
+    }
+
+    const c = currentPush;
+
+    // 控制台打印推送内容
+    console.log('[飞书模拟] ═══════════════════════════════');
+    console.log('[飞书模拟] 推送对象：David L. (D001)');
+    console.log('[飞书模拟] 推送日期：' + TODAY + ' ' + (c.pushTime || '09:00'));
+    console.log('[飞书模拟] ──────────────────────────────');
+    console.log('[飞书模拟] 📊 今日表现：' + (c.dailyChangePct >= 0 ? '+' : '') + c.dailyChangePct.toFixed(1) + '%');
+    console.log('[飞书模拟]    日变动：$' + fmtM(Math.abs(c.dailyChange)));
+    console.log('[飞书模拟]    总资产：$' + fmtM(c.total));
+    console.log('[飞书模拟] ──────────────────────────────');
+    if (c.riskItems && c.riskItems.length > 0) {
+        console.log('[飞书模拟] ⚡ 风险/机会（' + c.riskItems.length + '条）：');
+        c.riskItems.forEach(function(r) { console.log('[飞书模拟]    ' + r.icon + ' ' + r.text); });
+    }
+    console.log('[飞书模拟] ──────────────────────────────');
+    if (c.product) {
+        console.log('[飞书模拟] 💡 推荐产品：' + c.product.name + ' — ' + c.product.reason);
+    } else {
+        console.log('[飞书模拟] 💡 推荐产品：无，保持现有配置');
+    }
+    console.log('[飞书模拟] ═══════════════════════════════');
+
+    // 弹窗提示
+    showNotify('success', '演示模式：已生成推送内容，实际生产将发送至飞书群');
+}
+
+function showNotify(type, msg) {
+    const banner = document.getElementById('notifyBanner');
+    const msgEl = document.getElementById('notifyMsg');
+    banner.className = `notify-banner show ${type}`;
+    msgEl.textContent = msg;
+    // Auto-hide after 6 seconds
+    setTimeout(() => { banner.classList.remove('show'); }, 6000);
+}
+
+function handleLegacyReply(keyword) {
+    const screen = document.getElementById('phoneScreen');
+
+    if (keyword === '传承') {
+        // Add user reply
+        const chatHtml = screen.innerHTML;
+        screen.innerHTML = chatHtml + `
+            <div class="chat-bubble user">传承</div>
+            <div class="chat-bubble system">
+                <span class="chat-emoji">📜</span> <strong>家族传承服务</strong><br><br>
+                已为您准备家族信托科普资料。<br>
+                我们的家族办公室顾问将在24小时内与您联系。<br><br>
+                <em>如需立即沟通，请致电您的专属顾问。</em>
+            </div>
+        `;
+        showToast('📜 已创建工单转家族办公室顾问');
+        trackEvent('interaction', 'legacy_reply', '传承');
+    } else if (keyword === '不需要') {
+        legacyOptOut = new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0];
+        const chatHtml = screen.innerHTML;
+        screen.innerHTML = chatHtml + `
+            <div class="chat-bubble user">不需要</div>
+            <div class="chat-bubble system">
+                已记录您的偏好，未来30天内不再推送传承相关提示。如需恢复，随时回复「传承」。
+            </div>
+        `;
+        showToast('传承提示已暂停30天');
+    }
+
+    screen.scrollTop = screen.scrollHeight;
+}
+
+// ===== Manual Review Queue =====
+function triggerReview() {
+    const payload = {
+        to: 'compliance.officer@hnipartners.com.hk',
+        subject: '⚠️ 高风险推送待复核 - David L.',
+        body: '以下推送触发人工复核条件：\n' +
+            (currentPush && currentPush.var95 > 10_000_000 ? '- VaR: ' + fmtM(currentPush.var95) + ' 超过 $10M 阈值\n' : '') +
+            (currentPush && currentPush.liquidity < 0.3 ? '- 流动性覆盖: ' + fmtPct(currentPush.liquidity) + ' 低于 30% 阈值\n' : '') +
+            '\n请合规官在推送系统中审批（模拟）。',
+        timestamp: new Date().toISOString(),
+    };
+    console.log('[REVIEW] === 模拟发送复核邮件 ===');
+    console.log('To:', payload.to);
+    console.log('Subject:', payload.subject);
+    console.log(payload.body);
+    console.log('[REVIEW] === 邮件已发送（模拟） ===');
+
+    showToast('📧 已发送复核邮件至合规官（模拟）');
+}
+
+function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+/*
+function toggleMermaidCard(cardId) {
+    const card = document.getElementById(cardId);
+    card.classList.toggle('collapsed');
+    // Re-run mermaid on expand
+    if (!card.classList.contains('collapsed')) {
+        setTimeout(() => { mermaid.init(undefined, card.querySelectorAll('.mermaid')); }, 100);
+    }
+}
+*/
+
+// ========== Init ==========
+// Auto-generate on load
+setTimeout(generatePush, 500);
+</script>
+</body>
+</html>
